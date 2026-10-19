@@ -1,0 +1,27 @@
+/*
+ * District layer: each narrative theme ("district") gets its own accent and a quiet environment cue, without touching the
+ * generated palette or the user's appearance choices. Components opt in with data-district="harbor|market" and use the
+ * `district` colour (bg-district, text-district, border-district/40 …). Defaults to harbor.
+ */
+:root { --c-district: 79 180 232; }
+[data-district='harbor'] { --c-district: 79 180 232; }
+[data-district='market'] { --c-district: 232 124 84; }
+:root[data-theme='light'] [data-district='harbor'] { --c-district: 12 100 156; }
+:root[data-theme='light'] [data-district='market'] { --c-district: 170 62 28; }
+
+/* quiet environment cues (never carry information) */
+.district-wash { background-image: linear-gradient(180deg, rgb(var(--c-district) / .07), transparent 220px); }
+[data-district='market'] .district-pattern {
+  background-image: repeating-linear-gradient(0deg, rgb(var(--c-district) / .06) 0 1px, transparent 1px 28px);
+}
+[data-district='harbor'] .district-pattern {
+  background-image: linear-gradient(rgb(var(--c-district) / .06) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--c-district) / .06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* shared investigation-screen primitives */
+.hud { @apply sticky top-0 z-30 border-b border-ink-600 bg-ink-950; }
+.hud::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: rgb(var(--c-district) / .85); }
+.district-chip { @apply inline-flex items-center gap-1.5 rounded-sm border border-district/60 bg-district/10 px-2 py-0.5 font-mono text-tiny font-medium uppercase tracking-wider text-district; }
+.brief { @apply rounded-lg border border-ink-600 bg-ink-800/soft; border-left: 3px solid rgb(var(--c-district)); }
+.dock { @apply fixed inset-x-0 bottom-0 z-40 border-t border-ink-600 bg-ink-950 pb-[env(safe-area-inset-bottom)] lg:hidden; }

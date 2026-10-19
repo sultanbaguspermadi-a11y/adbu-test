@@ -1,0 +1,146 @@
+/*
+ * Appearance system.
+ * One place for every user-adjustable design token. The app never branches on preferences in components:
+ * src/theme/apply.ts only sets data-* attributes on <html>, and the rules below turn them into CSS variables.
+ * Colours: palette.css (generated, contrast-checked).  Defaults here == the original look.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* typography */
+  --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: 'Noto Naskh Arabic', Amiri, 'Traditional Arabic', 'Geeza Pro', serif;
+  --ui-font-scale: 1;
+  --ui-leading: 1;
+  --readable-lh: 1;
+  --ui-leading-eff: calc(var(--ui-leading) * var(--readable-lh));
+  --ar-scale: 1;
+  --ar-leading: 1;
+  --ar-leading-eff: calc(var(--ar-leading) * var(--readable-lh));
+  --ar-weight: 400;
+
+  /* layout */
+  --density: 1;
+  --control-height: 44px;
+  --panel-padding: calc(1.25rem * var(--density));
+  --content-max: 1680px;
+
+  /* shape */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+
+  /* translucency (all become 1 under "reduce transparency" / high contrast) */
+  --alpha-scrim: 0.85;
+  --alpha-scrim-sm: 0.75;
+  --alpha-glass: 0.65;
+  --alpha-soft: 0.5;
+  --alpha-soft-sm: 0.4;
+
+  /* decoration */
+  --grid-line: 243 236 219 / 0.028;
+
+  /* focus */
+  --focus-ring: var(--c-gold-400);
+  --focus-strong: 255 255 255;
+  --focus-halo: 10 18 28;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --grid-line: 15 27 41 / 0.06;
+  --focus-strong: 0 0 0;
+  --focus-halo: 255 255 255;
+}
+/* Paper is cream stock in every theme: focus ring is navy on it. */
+.paper, .on-paper { --focus-ring: var(--c-ink-900); --focus-strong: 0 0 0; --focus-halo: 255 255 255; }
+
+/* Semantic aliases. Re-declared on paper so they resolve against the paper palette there. */
+:root, .paper, .on-paper {
+  --color-bg: rgb(var(--c-ink-900));
+  --color-surface: rgb(var(--c-ink-800));
+  --color-surface-raised: rgb(var(--c-ink-700));
+  --color-border: rgb(var(--c-ink-600));
+  --color-text: rgb(var(--c-cream-100));
+  --color-text-muted: rgb(var(--c-cream-400));
+  --color-accent: rgb(var(--c-gold-500));
+  --color-accent-text: rgb(var(--c-gold-400));
+  --color-on-accent: rgb(var(--c-on-accent));
+  --color-danger: rgb(var(--c-bad));
+  --color-success: rgb(var(--c-good));
+  --color-paper: rgb(var(--c-paper));
+}
+
+/* ---------- interface font ---------- (defined on any [data-*] element so Settings can show specimens) */
+[data-ui-font='inter'] { --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+[data-ui-font='system'] { --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+[data-ui-font='plex'] { --font-ui: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; }
+[data-ui-font='atkinson'] { --font-ui: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif; }
+
+/* ---------- Arabic font ---------- */
+[data-ar-font='naskh'] { --font-arabic: 'Noto Naskh Arabic', Amiri, 'Traditional Arabic', 'Geeza Pro', serif; }
+[data-ar-font='amiri'] { --font-arabic: Amiri, 'Noto Naskh Arabic', 'Traditional Arabic', 'Geeza Pro', serif; }
+[data-ar-font='scheherazade'] { --font-arabic: 'Scheherazade New', 'Noto Naskh Arabic', 'Traditional Arabic', 'Geeza Pro', serif; }
+
+/* ---------- sizes & rhythm ---------- */
+:root[data-ui-size='small'] { --ui-font-scale: 0.9; }
+:root[data-ui-size='large'] { --ui-font-scale: 1.1; }
+:root[data-ui-size='xlarge'] { --ui-font-scale: 1.25; }
+:root[data-ui-leading='compact'] { --ui-leading: 0.92; }
+:root[data-ui-leading='relaxed'] { --ui-leading: 1.12; }
+:root[data-ar-size='large'] { --ar-scale: 1.2; }
+:root[data-ar-size='xlarge'] { --ar-scale: 1.4; }
+:root[data-ar-leading='compact'] { --ar-leading: 0.88; }
+:root[data-ar-leading='relaxed'] { --ar-leading: 1.22; }
+:root[data-ar-weight='bold'] { --ar-weight: 600; }
+:root[data-readable='on'] { --readable-lh: 1.1; }
+:root[data-readable='on'] body { letter-spacing: 0.015em; word-spacing: 0.06em; }
+
+/* ---------- density ---------- */
+:root[data-density='compact'] { --density: 0.85; --control-height: 40px; }
+:root[data-density='spacious'] { --density: 1.18; --control-height: 48px; }
+
+/* ---------- content width ---------- */
+:root[data-width='narrow'] { --content-max: 1280px; }
+:root[data-width='wide'] { --content-max: 2000px; }
+
+/* ---------- corner style ---------- */
+:root[data-radius='sharp'] { --radius-xs: 0; --radius-sm: 0; --radius-md: 0; --radius-lg: 0; --radius-xl: 0; }
+:root[data-radius='slight'] { --radius-xs: 1px; --radius-sm: 2px; --radius-md: 2px; --radius-lg: 3px; --radius-xl: 4px; }
+:root[data-radius='extra'] { --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 18px; }
+
+/* ---------- transparency ---------- */
+:root[data-transparency='reduced'], :root[data-contrast='high'] {
+  --alpha-scrim: 1; --alpha-scrim-sm: 1; --alpha-glass: 1; --alpha-soft: 1; --alpha-soft-sm: 1;
+}
+:root[data-transparency='reduced'] .paper, :root[data-contrast='high'] .paper { background-image: none; }
+
+/* ---------- visual effects ---------- */
+:root[data-grid='off'] body { background-image: none; }
+:root[data-grain='off'] .paper { background-image: none; }
+
+/* ---------- motion ---------- */
+/* reduced: movement is replaced by fades, loops stop. none: every animation/transition collapses to its end state
+   (state is still shown, it just does not move). */
+:root[data-motion='reduced'] *, :root[data-motion='reduced'] *::before, :root[data-motion='reduced'] *::after {
+  animation-iteration-count: 1 !important; scroll-behavior: auto !important;
+}
+:root[data-motion='reduced'] .marching { animation: none; }
+:root[data-motion='reduced'] .stamp-in { animation: fade-in 0.18s ease-out both; transform: rotate(-4deg); }
+:root[data-motion='reduced'] .found-pulse { animation: none; }
+:root[data-motion='none'] *, :root[data-motion='none'] *::before, :root[data-motion='none'] *::after {
+  animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important;
+}
+:root[data-decor='off'] .marching { animation: none; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- accessibility ---------- */
+:root[data-focus='strong'] :focus-visible, :root[data-contrast='high'] :focus-visible {
+  outline: 3px solid rgb(var(--focus-strong)); outline-offset: 2px; box-shadow: 0 0 0 2px rgb(var(--focus-halo));
+}
+:root[data-contrast='high'] :is(.panel, .panel-flat, .paper, .field, .chip, .stamp, .btn-secondary, .btn-danger) { border-width: 2px; }
+:root[data-contrast='high'] :is([aria-pressed='true'], [aria-selected='true'], [aria-checked='true']) { outline: 2px solid rgb(var(--c-gold-400)); outline-offset: 1px; }
+:root[data-contrast='high'] .rule, :root[data-contrast='high'] [class*='border-b'], :root[data-contrast='high'] [class*='border-t'] { border-color: rgb(var(--c-ink-600)); }
