@@ -106,3 +106,37 @@ body {
   /* font specimens in Settings: render a sample in the font being offered (the variable is defined on [data-ui-font]) */
   .font-sample-ui { font-family: var(--font-ui); }
 }
+
+/* ---------- ambient scene motion (decorative; every loop is stopped by data-motion reduced/none and data-decor off) ---------- */
+.amb { transform-box: fill-box; transform-origin: center; will-change: transform; }
+@keyframes amb-wave { from { transform: translateX(0); } to { transform: translateX(-40px); } }
+@keyframes amb-bob { 0%, 100% { transform: translateY(0) rotate(-.35deg); } 50% { transform: translateY(2.5px) rotate(.35deg); } }
+@keyframes amb-cloud { from { transform: translateX(-14px); } to { transform: translateX(18px); } }
+@keyframes amb-glint { 0%, 100% { opacity: .85; } 50% { opacity: .55; } }
+@keyframes amb-lamp { 0%, 100% { opacity: 1; } 47% { opacity: .82; } 50% { opacity: .95; } }
+@keyframes amb-gull { from { transform: translateX(-30px) translateY(0); } 50% { transform: translateX(20px) translateY(-6px); } to { transform: translateX(70px) translateY(2px); } }
+.amb-wave-0 { animation: amb-wave 9s linear infinite; }
+.amb-wave-1 { animation: amb-wave 6.5s linear infinite; }
+.amb-wave-2 { animation: amb-wave 4.8s linear infinite; }
+.amb-bob { animation: amb-bob 5.5s ease-in-out infinite; }
+.amb-bob-slow { animation: amb-bob 8s ease-in-out infinite; }
+.amb-cloud-0 { animation: amb-cloud 38s ease-in-out infinite alternate; }
+.amb-cloud-1 { animation: amb-cloud 52s ease-in-out infinite alternate-reverse; }
+.amb-glint { animation: amb-glint 4.5s ease-in-out infinite; }
+.amb-lamp { animation: amb-lamp 6s ease-in-out infinite; }
+.amb-gull-0 { animation: amb-gull 34s linear infinite alternate; }
+.amb-gull-1 { animation: amb-gull 46s linear infinite alternate-reverse; }
+:root[data-motion='reduced'] .amb, :root[data-motion='none'] .amb, :root[data-decor='off'] .amb { animation: none !important; will-change: auto; }
+@media (prefers-reduced-motion: reduce) { .amb { animation: none !important; } }
+@keyframes amb-sway { 0%, 100% { transform: rotate(-.8deg); } 50% { transform: rotate(.8deg); } }
+@keyframes amb-shaft { 0%, 100% { opacity: 1; } 50% { opacity: .78; } }
+@keyframes amb-mote { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: .55; } 100% { transform: translate(18px, -26px); opacity: 0; } }
+.amb-sway { transform-origin: 50% 0; animation: amb-sway 6s ease-in-out infinite; }
+.amb-shaft { animation: amb-shaft 9s ease-in-out infinite; }
+.amb-mote { animation: amb-mote 10s linear infinite; }
+
+/* ---------- baked scene planes + pointer parallax ---------- */
+.scene-plane { transition: opacity .45s ease-out; }
+.parallax { transform: translate(calc(var(--px, 0) * var(--depth, 0) * -7px), calc(var(--py, 0) * var(--depth, 0) * -3px)); transition: transform .25s ease-out; }
+:root[data-motion='reduced'] .parallax, :root[data-motion='none'] .parallax, :root[data-decor='off'] .parallax { transform: none !important; transition: none; }
+@media (prefers-reduced-motion: reduce) { .parallax { transform: none !important; transition: none; } .scene-plane { transition: none; } }
