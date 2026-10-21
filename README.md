@@ -159,3 +159,39 @@ Id kasus memakai namespace: `harbor-1…5`, `market-1…5`. Data lama (`case-1�
 - Tidak ada service worker: halaman harus dimuat sekali dengan internet; setelah itu gameplay tidak membutuhkan internet. Karena tidak ada service worker, memuat ulang halaman saat benar-benar offline tidak didukung.
 - Tidak ada anti-cheat (sengaja, aplikasi lomba).
 - Teks Arab sebaiknya ditinjau guru bahasa Arab sebelum dipakai di kelas.
+
+## Illustrated scenes (visual system)
+
+Both districts are layered painted-style worlds. Game logic is untouched: scenes only receive `SceneProps` and draw hotspots on top.
+
+### How a scene is built (back to front)
+
+1. **Vector fallback**: the layer components in `HarborBackdrop.tsx` / `marketBackgrounds.tsx` + `MarketAtmosphere.tsx`. Always rendered; visible until the baked planes load, or if they fail.
+2. **Baked planes** (`public/scenes/**.webp`): the same layers rasterised at 2x, softened and given a brush-streak canvas grain. Harbor has five planes per orientation (sky, clouds, sea, quay, grade); Market has one background per scene per orientation. Planes share the hotspot SVG's coordinate system, so alignment cannot drift.
+3. **Live ambient vector layer** between the planes: waves, bobbing sails, glitter, gulls, lamp glow, swaying bunting/cloth, light shafts, dust motes.
+4. **Contact shadows**, then **hotspots**. Each entity is a baked, lit sprite (`public/scenes/sprites/<kind>.webp`, lit from the upper left, soft ink contour) that replaces its vector glyph only after it has really loaded.
+5. **Pointer parallax** on the far planes (sky, clouds) only, via CSS variables (no re-render). Planes that carry hotspots never move.
+
+### Regenerating assets
+
+```bash
+npm run scenes:render   # scripts/render-scenes.tsx -> public/scenes/ (22 planes + 30 sprites, ~560 KB total, deterministic)
+```
+
+Re-run it after changing any layer component or any glyph in `EntityIcon.tsx` / `MarketGlyphs.tsx`, then commit the regenerated files. `sceneAssets.ts` is the single manifest; a type-level check makes adding an `EntityKind` without a sprite a compile error, and `scenes.test.tsx` fails if any referenced file is missing or over 250 KB.
+
+To use hand-made art instead (Midjourney/Flux/an illustrator): export the same file names at the same aspect ratios (wide 800×460, narrow 400×620 for Harbor / 400×440 for Market, sprites 72×72 units; planes may be any pixel size) and drop them over `public/scenes/`. No code change is needed.
+
+### Rules
+
+- Decorative layers are `aria-hidden` and never focusable; hotspots remain the only interactive elements and keep their scene coordinates.
+- Gradient ids come from `useId()` so several scenes can share a page.
+- Never put a CSS animation on an element that carries its own `transform` attribute: wrap it (outer `<g>` positions, inner `<g className="amb ...">` animates).
+- All loops and parallax stop under `data-motion="reduced|none"`, `data-decor="off"` and `prefers-reduced-motion`.
+- Raster planes fade in only on a real `load` event; a failed or slow image never leaves an empty scene.
+
+### Known limits
+
+- Art is procedurally generated and baked, not hand-painted; see "Regenerating assets" for swapping in real illustration.
+- Tintable Market goods (`TINTABLE_MARKET_ENTITIES`) are baked with their default colour inside scenes; tinted rendering elsewhere still uses the vector glyph.
+- Case Select, Landing, evidence board, results and clue-inspection transitions have not been redesigned yet.
